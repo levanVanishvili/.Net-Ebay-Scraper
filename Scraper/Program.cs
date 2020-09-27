@@ -59,7 +59,26 @@ namespace Scraper
                 Console.WriteLine(listTile[i] + "\n" + listCondition[i].Trim() + "\n " + Regex.Match(listPrice[i].Trim('\r', '\n', '\t'), @"\d+.\d+"));
                 Console.WriteLine(new string('-', 100));
             }
-                     
+
+
+            // Check if a next page link is present
+
+            string nextPageUrl = "";
+
+            var nextPage = doc.DocumentNode.Descendants("td")
+                .Where(node => node.GetAttributeValue("class", "")
+                .Equals("pagn-next")).FirstOrDefault();
+
+            if (nextPage != null && nextPage.InnerHtml != null)//gasasworebelia
+            {
+                nextPageUrl = nextPage.SelectSingleNode("//a[@class = 'gspr next']").GetAttributeValue("href", "");
+
+            }
+            if (!String.IsNullOrEmpty(nextPageUrl))
+            {
+                GetHtml(nextPageUrl);
+            }
+
             Console.ReadLine();
         }
 
