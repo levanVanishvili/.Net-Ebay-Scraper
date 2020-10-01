@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Reflection.Metadata;
+using AngleSharp.Text;
 
 namespace Scraper
 {
@@ -20,26 +21,28 @@ namespace Scraper
 
         private static async void GetHtml(string url)
         {
-
+            //get HTML document from HTTP
             HtmlAgilityPack.HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
+            //Represents a complete HTML document
             HtmlAgilityPack.HtmlDocument doc = web.Load(url);
 
-            var htmlList = doc.DocumentNode.SelectNodes("//a[@class = 'vip']");
+            //Selects a list of nodes matching the HtmlAgilityPack.HtmlNode.XPath expression
+            var htmlName = doc.DocumentNode.SelectNodes("//a[@class = 'vip']");
 
 
+            //Get all descendant nodes with matching name
             var htmlPrice = doc.DocumentNode.Descendants("li")
                 .Where(node => node.GetAttributeValue("class", "")
                 .Equals("lvprice prc")).ToList();
 
-
+            //Selects a list of nodes matching the HtmlAgilityPack.HtmlNode.XPath expression
             var htmlCondition = doc.DocumentNode.SelectNodes("//div[@class = 'lvsubtitle']");
 
             List<string> listTile = new List<string>();
             List<string> listPrice = new List<string>();
             List<string> listCondition = new List<string>();
 
-
-            foreach (var item in htmlList)
+            foreach (var item in htmlName)
             {
                 listTile.Add(item.InnerText);
             }
@@ -60,27 +63,31 @@ namespace Scraper
                 Console.WriteLine(new string('-', 100));
             }
 
-
-            // Check if a next page link is present
+            // Check if a next page link is present 
 
             string nextPageUrl = "";
 
+            //Get all descendant nodes with matching name
             var nextPage = doc.DocumentNode.Descendants("td")
                 .Where(node => node.GetAttributeValue("class", "")
                 .Equals("pagn-next")).FirstOrDefault();
 
-            if (nextPage != null && nextPage.InnerHtml != null)//gasasworebelia
-            {
-                nextPageUrl = nextPage.SelectSingleNode("//a[@class = 'gspr next']").GetAttributeValue("href", "");
+            //counts the number of all pages
+            var pages = doc.DocumentNode.SelectSingleNode("//td[@class = 'pages']").Descendants("a").Count();
 
+            //Get current page number
+            var currentPage = doc.DocumentNode.SelectSingleNode("//a[@class = 'pg  curr']").InnerText;
+
+            if (nextPage != null && currentPage != pages.ToString()) 
+            {
+                //Get next page Url
+                nextPageUrl = nextPage.SelectSingleNode("//a[@class = 'gspr next']").GetAttributeValue("href", "");
             }
             if (!String.IsNullOrEmpty(nextPageUrl))
             {
                 GetHtml(nextPageUrl);
             }
-
             Console.ReadLine();
         }
-
     }
 }
