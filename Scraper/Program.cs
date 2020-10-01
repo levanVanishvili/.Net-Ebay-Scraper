@@ -15,11 +15,16 @@ namespace Scraper
     {
         static void Main(string[] args)
         {
-            string url = "https://www.ebay.com/sch/i.html?_from=R40&_nkw=google+pixel+4a&_in_kw=1&_ex_kw=&_sacat=0&LH_Complete=1&_udlo=&_udhi=&LH_BIN=1&_samilow=&_samihi=&_sadis=15&_stpos=&_sargn=-1%26saslc%3D1&_salic=1&_sop=12&_dmd=1&_ipg=50&_fosrp=1";
+            //Test URL "https://www.ebay.com/sch/i.html?_from=R40&_nkw=google+pixel+4a&_in_kw=1&_ex_kw=&_sacat=0&LH_Complete=1&_udlo=&_udhi=&LH_BIN=1&_samilow=&_samihi=&_sadis=15&_stpos=&_sargn=-1%26saslc%3D1&_salic=1&_sop=12&_dmd=1&_ipg=50&_fosrp=1";
+
+            Console.WriteLine("Please Enter a Url");
+
+            string url = Console.ReadLine();           
+
             GetHtml(url);
         }
 
-        private static async void GetHtml(string url)
+        private static void GetHtml(string url)
         {
             //get HTML document from HTTP
             HtmlAgilityPack.HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
